@@ -28,6 +28,7 @@ function Post() {
             <ul>
                 {postList.map(post => (
                     <li>
+                        {Post}
                         {post.title} {post.text}
                     </li>
                 ))}
@@ -35,5 +36,5 @@ function Post() {
         )
     }
 }
-
+s
 export default Post;
