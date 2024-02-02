@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Chip, CircularProgress, Container, Divider } from "@mui/material";
 import Comment from "../Comment/Comment";
+import CommentForm from "../Comment/CommentForm";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -105,14 +106,17 @@ export default function Post(props) {
         </ExpandMore>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
-        
-      <Divider textAlign="left">Comments</Divider>
+
+        <Divider textAlign="left">Comments</Divider>
+
         <Container fixed >
           {error ? "error" : isLoaded ?
             commentList.map(comment => (
               <Comment text={comment.text} userId={1} userName={"username"}></Comment>
             )) : <CircularProgress color="inherit" />
           }
+
+          <CommentForm userId={1} postId={postId}></CommentForm>
         </Container>
       </Collapse>
     </Card>
