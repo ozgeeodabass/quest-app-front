@@ -49,12 +49,12 @@ export default function Post(props) {
   const handleLike = () => {
     setIsLiked(!isLiked);
     if(!isLiked){
-      setLikeCount(likeCount+1)
       saveLike();
+      setLikeCount(likeCount+1)
     }
     else{
-      setLikeCount(likeCount-1)
       deleteLike();
+      setLikeCount(likeCount-1)
     }
 
   };
