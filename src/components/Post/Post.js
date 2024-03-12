@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import { Link } from "react-router-dom";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { Chip, CircularProgress, Container, Divider } from "@mui/material";
+import { Chip, CircularProgress, Container, Divider, Stack } from "@mui/material";
 import Comment from "../Comment/Comment";
 import CommentForm from "../Comment/CommentForm";
 
@@ -29,12 +29,16 @@ const ExpandMore = styled((props) => {
 
 export default function Post(props) {
 
+  const { title, text, userId, userName, postId, likes } = props;
+
   const [expanded, setExpanded] = React.useState(false);
-  const [liked, setLiked] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState(null);
   const [commentList, setCommentList] = useState([]);
+  const [isLiked,setIsLiked] = useState(false);
   const isInitialMount = useRef(true);
+  const [likeCount, setLikeCount] = useState(likes.length);
+  const [likeId,setLikeId] =useState(null);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -43,7 +47,16 @@ export default function Post(props) {
   };
 
   const handleLike = () => {
-    setLiked(!liked);
+    setIsLiked(!isLiked);
+    if(!isLiked){
+      setLikeCount(likeCount+1)
+      saveLike();
+    }
+    else{
+      setLikeCount(likeCount-1)
+      deleteLike();
+    }
+
   };
 
   const refreshComments = () => {
@@ -59,6 +72,29 @@ export default function Post(props) {
         })
   }
 
+  const saveLike = () => {
+    fetch("/api/likes/create",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                userId: userId,
+                postId: postId
+            }),
+        })
+        .catch((err) => console.log("error"))
+}
+
+const deleteLike = () => {
+  fetch("/api/likes/delete/"+likeId,
+      {
+          method: "DELETE",
+      })
+      .catch((err) => console.log("error"))
+}
+
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -67,7 +103,18 @@ export default function Post(props) {
     }
   }, [commentList])
 
-  const { title, text, userId, userName, postId } = props;
+  const checkLikes = () => {
+     var likeControl= likes.find((like => like.userId===userId));
+     if(likeControl!=null){
+          setLikeId(likeControl.id)
+           setIsLiked(true);
+     }
+  };
+
+  useEffect(() => {
+    checkLikes();
+  }, [])
+
 
   return (
     <Card sx={{ width: 800 }} style={{ margin: 20 }} elevation={3}>
@@ -93,9 +140,19 @@ export default function Post(props) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton onClick={handleLike} aria-label="add to favorites">
-          <FavoriteBorderIcon style={liked ? { color: "#64dd17" } : null} />
-        </IconButton>
+
+        <Stack direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={0.5}>
+          <IconButton onClick={handleLike} aria-label="add to favorites">
+            <FavoriteBorderIcon style={isLiked ? { color: "#64dd17" } : null} />
+          </IconButton>
+          <Typography variant="subtitle1" gutterBottom>
+            {likeCount}
+          </Typography>
+        </Stack>
+
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}

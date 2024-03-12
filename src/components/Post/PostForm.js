@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
@@ -14,7 +13,8 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 
 export default function Post(props) {
@@ -47,6 +47,14 @@ export default function Post(props) {
         setTitle("");
         setText("");
         refreshPosts();
+
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setIsSent(false);
     };
 
     const handleTitle = (value) => {
@@ -63,20 +71,20 @@ export default function Post(props) {
         <Card sx={{ width: 800 }} style={{ margin: 20 }}>
 
             <div>
-                <Accordion defaultExpanded>
+                <Accordion defaultChecked>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1-content"
                         id="panel1-header"
                     >
-                        <Typography>What's going on {userName}...</Typography>
+                        <Typography color="#757575">What's going on {userName}...</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         <CardHeader
                             avatar={
                                 <Link to={`/users/${userId}`} style={{ textDecoration: "none", boxShadow: "none", color: "white" }}>
 
-                                    <Avatar sx={{ color: "black", bgcolor: "#f50057" }} aria-label="recipe">
+                                    <Avatar sx={{ color: "black", bgcolor: "#64dd17" }} aria-label="recipe">
                                         {userName.charAt(0).toUpperCase()}
                                     </Avatar>
 
@@ -94,20 +102,26 @@ export default function Post(props) {
                                     onChange={(i) => handleText(i.target.value)}
                                     endAdornment={
                                         <InputAdornment position="end">
-                                            <Button endIcon={<SendIcon />} color="error" onClick={handleSubmit}>
-                                                POST
+                                            <Button endIcon={<SendIcon />} color="success" onClick={handleSubmit}>
                                             </Button>
                                         </InputAdornment>
                                     }>
                                 </OutlinedInput>}
                             </Typography>
+
+                            <Snackbar open={isSent} autoHideDuration={6000} onClose={handleClose}>
+                                <Alert
+                                    onClose={handleClose}
+                                    severity="success"
+                                    sx={{ width: '100%' }}
+                                >
+                                    Post is successfully created!
+                                </Alert>
+                            </Snackbar>
                         </CardContent>
                     </AccordionDetails>
                 </Accordion>
             </div>
-
-
-
 
         </Card>
     )

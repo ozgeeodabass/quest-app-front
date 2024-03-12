@@ -40,10 +40,10 @@ export default function Home() {
         justifyContent: "center", alignItems: "center", height: "100vh"
       }} fixed>
         <div>
-          <PostForm style={{margin:"20"}} userId={"1"} userName={"Özge"} refreshPosts={refreshPosts}/>
+          <PostForm style={{margin:"20"}} userId={1} userName={"Özge"} refreshPosts={refreshPosts}/>
 
         {postList.map(post => (
-          <Post title={post.title} text={post.text} userId={post.userId} userName={post.userName}></Post>
+          <Post likes ={post.postLikes} postId={post.id} title={post.title} text={post.text} userId={post.userId} userName={post.userName}></Post>
         ))}
         </div>
 
